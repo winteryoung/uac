@@ -28,10 +28,24 @@ rule '.gem' => gem_source_files do
   sh "gem build #{app_name}.gemspec"
 end
 
-task :build => gem_files
+task :build => "#{app_name}.gem"
 
 task :publish => [ :clean, :build ] do
   FileList["*.gem"].each do |f|
     sh "gem push #{f}"
+  end
+end
+
+task :local => [ :clean, :build ] do
+  sh "gem uninstall #{app_name}"
+  FileList["*.gem"].each do |f|
+    sh "gem install #{f}"
+  end
+end
+
+task :test do
+  tests = FileList.new "test/**/*_test.rb"
+  tests.each do |test|
+    system "ruby #{test}"
   end
 end

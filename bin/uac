@@ -1,0 +1,79 @@
+#!/usr/bin/env ruby
+
+require 'uac'
+
+def split_args
+  i = ARGV.index '--'
+  if i
+    return [ ARGV[0...i], ARGV[(i+1)..-1] ]
+  else
+    return [ [], ARGV ]
+  end
+end
+
+(meta_args, args) = split_args
+
+all_options = args.all? do |arg|
+  arg.start_with? "-"
+end
+if all_options
+  meta_args = args
+  args = []
+end
+
+options = {}
+option_parser = OptionParser.new do |opt|
+  opt.banner = <<-EOF
+Usage: uac <OPTIONS> <COMMAND>
+
+Argument separator:
+
+'--' is used to separate the options passed to uac and the commands
+to be executed. Example is shown below. If an option for uac is
+present (example '-p'), then '--' is required.
+
+Example:
+
+* Echo hello
+  uac cmd /k "echo hello"
+
+* Pause after execution
+  uac -p -- netstat -anb
+  It's equivalent to
+  uac cmd /c "netstat -anb & pause"
+EOF
+
+  opt.separator ""
+  opt.separator "Options:"
+
+  terminal_help = 'The given command will be executed in a terminal window, so cmd /c is added implictly.'
+  opt.on('-t', '--terminal', terminal_help) do |o|
+    options[:terminal] = o
+  end
+
+  pause_help = 'Pause after execution. This implies executing command line, so cmd.exe is the program to be executed. This option implies --terminal.'
+  opt.on('-p', '--pause', pause_help) do |o|
+    options[:pause] = o
+    options[:terminal] = o
+  end
+
+  opt.on('-d', '--debug') do |o|
+    options[:debug] = o
+  end
+
+  opt.on_tail('-h', '--help', 'Print this help.') do |o|
+    puts opt
+    exit
+  end
+end.parse! meta_args
+
+if options[:debug]
+  puts "options: #{options}"
+  puts "args: #{args}"
+end
+
+if not args or args.empty?
+  exit
+end
+
+Uac.shell_execute options, args

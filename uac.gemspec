@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'uac'
-  s.version     = '0.2.1'
+  s.version     = '0.2.2'
   s.date        = '2016-03-19'
   s.summary     = "Windows UAC elevator"
   s.description = "Executes commands with elevated privilege in Windows"

@@ -21,7 +21,10 @@ if all_options
   args = []
 end
 
-options = {}
+options = {
+  :pause => true,
+  :terminal => true
+}
 option_parser = OptionParser.new do |opt|
   opt.banner = <<-EOF
 Usage: uac <OPTIONS> <COMMAND>
@@ -34,30 +37,30 @@ present (example '-p'), then '--' is required.
 
 Example:
 
-* Echo hello
-  uac cmd /k "echo hello"
-
-* Pause after execution
-  uac -p -- netstat -anb
+* View netstat and then pause after execution
+  uac netstat -anb
   It's equivalent to
   uac cmd /c "netstat -anb & pause"
+
+* Start a daemon process and then exit
+  uac --no-terminal YourService.exe
 EOF
 
   opt.separator ""
   opt.separator "Options:"
 
-  terminal_help = 'The given command will be executed in a terminal window, so cmd /c is added implictly.'
-  opt.on('-t', '--terminal', terminal_help) do |o|
+  terminal_help = 'The given command will be executed in a terminal window, so cmd /c is added implictly. This is enabled by default.'
+  opt.on('-t', '--[no-]terminal', terminal_help) do |o|
     options[:terminal] = o
   end
 
-  pause_help = 'Pause after execution. This implies executing command line, so cmd.exe is the program to be executed. This option implies --terminal.'
-  opt.on('-p', '--pause', pause_help) do |o|
+  pause_help = 'Pause after execution. This implies executing command line, so cmd.exe is the program to be executed. This option implies --terminal. This is enabled by default.'
+  opt.on('-p', '--[no-]pause', pause_help) do |o|
     options[:pause] = o
     options[:terminal] = o
   end
 
-  opt.on('-d', '--debug') do |o|
+  opt.on('--debug') do |o|
     options[:debug] = o
   end
 

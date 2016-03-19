@@ -23,3 +23,4 @@ It's equivalent to
 ```batch
 uac cmd /k "netsatat -anb & pause"
 ```
+**Note**, by the nature of Windows design, a process cannot be elevated directly, only a new process can be granted the admin privlege. So uac opens a new window every time you call.

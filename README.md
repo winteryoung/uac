@@ -8,7 +8,9 @@ This program elevates program privilege under a UAC enabled Windows environment.
 
 * Echo hello
 
+```batch
 uac cmd /k "echo hello"
+```
 
 * Pause after execution
 

@@ -23,7 +23,7 @@ module UacSh
       opt.separator ""
       opt.separator "Options:"
 
-      terminal_help = 'The given command will be executed in a terminal window, so cmd /c is added implictly. This is enabled by default.'
+      terminal_help = "The given command will be executed in a terminal window, so cmd /c is added implictly. Default is #{options[:terminal]}."
       opt.on('-t', '--[no-]terminal', terminal_help) do |o|
         options[:terminal] = o
         if not o
@@ -32,7 +32,7 @@ module UacSh
         end
       end
 
-      pause_help = 'Pause after execution. This implies executing command line, so cmd.exe is the program to be executed. This option implies --terminal. This is enabled by default.'
+      pause_help = "Pause after execution. This implies executing command line, so cmd.exe is the program to be executed. This option implies --terminal. Default is #{options[:pause]}."
       opt.on('-p', '--[no-]pause', pause_help) do |o|
         options[:pause] = o
         if o
@@ -44,7 +44,8 @@ module UacSh
         options[:debug] = o
       end
 
-      opt.on('--cd', '-c', 'Change to current directory. Default is true. This option implies --terminal.') do |o|
+      cd_help = "Change to current directory. Default is true. This option implies --terminal. Default is #{options[:cd]}."
+      opt.on('--cd', '-c', cd_help) do |o|
         options[:cd] = o
         if o
           options[:terminal] = o

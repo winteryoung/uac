@@ -1,28 +1,18 @@
 require "rubygems"
+require "winter_rakeutils"
+
+include WinterRakeUtils
 
 app_name = "uac"
 
 gem_spec = Gem::Specification::load("#{app_name}.gemspec")
 ver = gem_spec.version
 
-def working_dir_clean?
-  `git status`.lines.each do |line|
-    if line.index "Changes to be committed"
-      return false
-    end
-  end
-  return true
-end
-
 task :gitcommit do
-  sh "git add -A"
-  if not working_dir_clean?
-    sh "git commit -m auto"
-    sh "git push"
-  end
+  git_commit_push
 end
 
-task :clean do
+task :my_clean do
   rm_rf "target"
 end
 
@@ -30,14 +20,14 @@ gem_source_files = FileList.new "lib/*", "bin/*", "#{app_name}.gemspec"
 gem_file = FileList.new "target/#{app_name}-#{ver}.gem"
 
 rule /target\/.+?\.gem/ => gem_source_files do |t|
-  mkdir_p "target"
+  ensure_dir "target"
   sh "gem build #{app_name}.gemspec"
-  mv "#{app_name}-#{ver}.gem", "target"
+  mv "#{app_name}-#{ver}.gem", "target/"
 end
 
 task :build => "target/#{app_name}-#{ver}.gem"
 
-task :local => [ :clean, :build ] do
+task :local => [ :my_clean, :build ] do
   sh "gem uninstall #{app_name}"
   pwd = Dir.pwd
   Dir.chdir "target"
@@ -80,25 +70,26 @@ rule /target\/.+?\.exe/ => proc {|name|
   name = m.captures[0]
   "target/#{name}_exe.rb"
 } do |t|
-  mkdir_p "target"
+  ensure_dir "target"
   sh "ocra --output #{t.name} #{t.source}"
 end
 
-def define_exe_task exe_name
-  exe_src = FileList.new "lib/*", "bin/#{exe_name}"
+def define_exe_rb_task exe_name
+  exe_src = FileList.new "lib/uac.rb", "lib/uac_sh.rb", "bin/#{exe_name}"
   file "target/#{exe_name}_exe.rb" => exe_src do |t|
-    mkdir_p "target"
+    ensure_dir "target"
     text = merge_exe_src exe_src
     File.open t.name, "wb" do |f|
       f.write text
     end
   end
 end
-define_exe_task "uac"
-define_exe_task "uacs"
+
+define_exe_rb_task "uac"
+define_exe_rb_task "uacs"
 
 task :exe => [ "target/uac.exe", "target/uacs.exe" ]
 
-task :publish => [ :clean, :exe ] do
+task :publish => [ :my_clean, :build, :exe ] do
   sh "gem push #{gem_file}"
 end

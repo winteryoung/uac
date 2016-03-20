@@ -37,10 +37,6 @@ end
 
 task :build => "target/#{app_name}-#{ver}.gem"
 
-task :publish => [ :clean, :build ] do
-  sh "gem push #{gem_file}"
-end
-
 task :local => [ :clean, :build ] do
   sh "gem uninstall #{app_name}"
   pwd = Dir.pwd
@@ -102,3 +98,7 @@ define_exe_task "uac"
 define_exe_task "uacs"
 
 task :exe => [ "target/uac.exe", "target/uacs.exe" ]
+
+task :publish => [ :clean, :exe ] do
+  sh "gem push #{gem_file}"
+end

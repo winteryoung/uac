@@ -4,13 +4,13 @@ This program elevates program privilege under a UAC enabled Windows environment,
 
 * If you have Ruby installed
 
-`gem install uac`
+  `gem install uac`
 
-This version runs fast. Because it doesn't have Ruby runtime embedded.
+  This version runs fast. Because it doesn't have Ruby runtime embedded.
 
 * If you don't have Ruby installed
 
-Download from https://github.com/winteryoung/uac/releases
+  Download from https://github.com/winteryoung/uac/releases
 
 # Examples
 

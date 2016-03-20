@@ -3,9 +3,9 @@
 require 'uac_sh'
 
 options = {
-  :pause => true,
-  :terminal => true,
-  :cd => true
+  :pause => false,
+  :terminal => false,
+  :cd => false
 }
 
 UacSh.run options, ARGV

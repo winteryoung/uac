@@ -12,6 +12,26 @@ module Uac
       return s
     end
 
+    def get_long_arg args
+      return args.map do |arg|
+        encode_arg arg
+      end.join " "
+    end
+
+    def join_long_args args, separator = " "
+      result = []
+      for arg in args
+        m = arg.match /^"(.+?)"$/
+        if m
+          core = m.captures[0]
+        else
+          core = arg
+        end
+        result << core
+      end
+      return result.join separator
+    end
+
     def join_args options, args
       if options[:terminal]
         file = "cmd"
@@ -21,18 +41,16 @@ module Uac
         rest_args = args[1..-1]
       end
 
-      rest = rest_args.map do |arg|
-        encode_arg arg
-      end.join " "
+      rest = get_long_arg rest_args
+
+      if options[:cd]
+        pre = get_long_arg [ 'cd', '/d', Dir.pwd, '&' ]
+        rest = join_long_args [ pre, rest ]
+      end
 
       if options[:pause]
-        m = rest.match /^\"(.+?)\"$/
-        if m
-          core = m.captures[0]
-        else
-          core = rest
-        end
-        rest = "#{core} & pause"
+        post = get_long_arg([ '&', 'pause' ])
+        rest = join_long_args [ rest, post ]
       end
 
       if options[:terminal]

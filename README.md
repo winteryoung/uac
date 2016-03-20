@@ -1,4 +1,4 @@
-This program elevates program privilege under a UAC enabled Windows environment.
+This program elevates program privilege under a UAC enabled Windows environment, just like `sudo` in Linux.
 
 # Installation
 

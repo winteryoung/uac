@@ -43,7 +43,10 @@ end
 
 task :local => [ :clean, :build ] do
   sh "gem uninstall #{app_name}"
-  sh "gem install #{gem_file}"
+  pwd = Dir.pwd
+  Dir.chdir "target"
+  sh "gem install #{app_name}-#{ver}.gem"
+  Dir.chdir pwd
 end
 
 task :test do

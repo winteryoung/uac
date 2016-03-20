@@ -52,4 +52,4 @@ This program elevates program privilege under a UAC enabled Windows environment,
 uac -h
 ```
 
-**Note**, by the nature of Windows design, a process cannot be elevated directly, only a new process can be granted the admin privilege. So uac opens a new window every time you call.
+**Note**, by the nature of Windows design, a process cannot be elevated directly, only a new process can be granted the admin privilege. So uac opens a new window or starts a new process every time you call.

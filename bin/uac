@@ -2,6 +2,8 @@
 
 require 'uac_sh'
 
+# EXE_PACKAGE_DIRECTIVE
+
 options = {
   :pause => true,
   :terminal => true,

@@ -1,5 +1,7 @@
 require_relative 'uac'
 
+# EXE_PACKAGE_DIRECTIVE
+
 module UacSh
   def self.split_args args
     i = args.index '--'

@@ -1,3 +1,5 @@
+# EXE_PACKAGE_DIRECTIVE
+
 require 'ffi'
 require 'optparse'
 

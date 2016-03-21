@@ -1,3 +1,4 @@
+require 'rake/clean'
 require "rubygems"
 require "winter_rakeutils"
 
@@ -12,9 +13,7 @@ task :gitcommit do
   git_commit_push
 end
 
-task :my_clean do
-  rm_rf "target"
-end
+CLOBBER.include "target"
 
 gem_source_files = FileList.new "lib/*", "bin/*", "#{app_name}.gemspec"
 gem_file = FileList.new "target/#{app_name}-#{ver}.gem"
@@ -27,7 +26,7 @@ end
 
 task :build => "target/#{app_name}-#{ver}.gem"
 
-task :local => [ :my_clean, :build ] do
+task :local => [ :clobber, :build ] do
   sh "gem uninstall #{app_name}"
   pwd = Dir.pwd
   Dir.chdir "target"
@@ -90,6 +89,6 @@ define_exe_rb_task "uacs"
 
 task :exe => [ "target/uac.exe", "target/uacs.exe" ]
 
-task :publish => [ :my_clean, :build, :exe ] do
+task :publish => [ :clobber, :build, :exe ] do
   sh "gem push #{gem_file}"
 end

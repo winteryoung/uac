@@ -8,6 +8,8 @@ app_name = "uac"
 
 gem_spec = Gem::Specification::load("#{app_name}.gemspec")
 ver = gem_spec.version
+gem_source_files = FileList.new "lib/*", "bin/*", "#{app_name}.gemspec"
+gem_file = FileList.new "target/#{app_name}-#{ver}.gem"
 
 task :gitcommit do
   git_commit_push
@@ -15,11 +17,9 @@ end
 
 CLOBBER.include "target"
 
-gem_source_files = FileList.new "lib/*", "bin/*", "#{app_name}.gemspec"
-gem_file = FileList.new "target/#{app_name}-#{ver}.gem"
+directory "target"
 
-rule /target\/.+?\.gem/ => gem_source_files do |t|
-  ensure_dir "target"
+rule /target\/.+?\.gem/ => [*gem_source_files, "target"] do |t|
   sh "gem build #{app_name}.gemspec"
   mv "#{app_name}-#{ver}.gem", "target/"
 end
@@ -64,19 +64,17 @@ def merge_exe_src exe_src
   return lines.join ""
 end
 
-rule /target\/.+?\.exe/ => proc {|name|
+rule /target\/.+?\.exe/ => [ proc {|name|
   m = name.match /target\/(.+?)\.exe/
   name = m.captures[0]
   "target/#{name}_exe.rb"
-} do |t|
-  ensure_dir "target"
+}, "target" ] do |t|
   sh "ocra --output #{t.name} #{t.source}"
 end
 
 def define_exe_rb_task exe_name
   exe_src = FileList.new "lib/uac.rb", "lib/uac_sh.rb", "bin/#{exe_name}"
-  file "target/#{exe_name}_exe.rb" => exe_src do |t|
-    ensure_dir "target"
+  file "target/#{exe_name}_exe.rb" => [*exe_src, "target"] do |t|
     text = merge_exe_src exe_src
     File.open t.name, "wb" do |f|
       f.write text
@@ -87,7 +85,7 @@ end
 define_exe_rb_task "uac"
 define_exe_rb_task "uacs"
 
-task :exe => [ "target/uac.exe", "target/uacs.exe" ]
+task :exe => ["target", *FileList.new("bin/*").pathmap("%{^bin/,target/}p.exe")]
 
 task :publish => [ :clobber, :build, :exe ] do
   sh "gem push #{gem_file}"

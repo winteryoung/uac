@@ -2,7 +2,7 @@ require 'rake'
 
 Gem::Specification.new do |s|
   s.name        = 'uac'
-  s.version     = '0.3.3'
+  s.version     = '0.3.4'
   s.date        = '2016-03-19'
   s.summary     = "Windows UAC elevator"
   s.description = "Executes commands with elevated privilege in Windows"
@@ -14,5 +14,5 @@ Gem::Specification.new do |s|
   s.executables = [ "uac", "uacs" ]
   s.add_runtime_dependency "ffi", ["~> 1.9"]
   s.add_development_dependency "ocra", ["~> 1.3"]
-  s.add_development_dependency "winter_rakeutils", ["~> 0.0"]
+  s.add_development_dependency "winter_rakeutils", ["~> 0.2"]
 end

@@ -27,7 +27,7 @@ end
 task :build => "target/#{app_name}-#{ver}.gem"
 
 task :local => [ :clobber, :build ] do
-  sh "gem uninstall #{app_name}"
+  sh "gem uninstall -ax #{app_name}"
   pwd = Dir.pwd
   Dir.chdir "target"
   sh "gem install #{app_name}-#{ver}.gem"
